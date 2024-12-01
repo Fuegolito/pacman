@@ -4,6 +4,8 @@ const context = canvas.getContext("2d");
 canvas.width = innerWidth;
 canvas.height = innerHeight;
 
+const startX = innerWidth/2 - (11*20)
+const startY = Math.floor(innerHeight/2 - (13*20))
 //get elapsed time since page load
 let msPrev = window.performance.now();
 const fps = 60;
@@ -189,8 +191,8 @@ class Pellet {
 //Creation of player in the game our pacman
 const player = new Player({
   position: {
-    x: Boundary.width + Boundary.width / 2,
-    y: Boundary.height + Boundary.height / 2,
+    x: Boundary.width + startX + Boundary.width / 2,
+    y: Boundary.height + startY + Boundary.height / 2,
   },
   velocity: {
     x: 0,
@@ -209,8 +211,8 @@ map.forEach((row, i) => {
         boundaries.push(
           new Boundary({
             position: {
-              x: Boundary.width * j,
-              y: Boundary.height * i,
+              x: (Boundary.width * j) + startX,
+              y: (Boundary.height * i) + startY,
             },
             image: createImage("./images/pipeHorizontal.png"),
           })
@@ -220,8 +222,8 @@ map.forEach((row, i) => {
         boundaries.push(
           new Boundary({
             position: {
-              x: Boundary.width * j,
-              y: Boundary.height * i,
+              x:(Boundary.width * j) + startX,
+              y: (Boundary.height * i) + startY,
             },
             image: createImage("./images/pipeVertical.png"),
           })
@@ -231,8 +233,8 @@ map.forEach((row, i) => {
         boundaries.push(
           new Boundary({
             position: {
-              x: Boundary.width * j,
-              y: Boundary.height * i,
+              x: (Boundary.width * j) + startX,
+              y: (Boundary.height * i) + startY,
             },
             image: createImage("./images/pipeCorner1.png"),
           })
@@ -242,8 +244,8 @@ map.forEach((row, i) => {
         boundaries.push(
           new Boundary({
             position: {
-              x: Boundary.width * j,
-              y: Boundary.height * i,
+              x: (Boundary.width * j) + startX,
+              y: (Boundary.height * i) + startY,
             },
             image: createImage("./images/pipeCorner2.png"),
           })
@@ -253,8 +255,8 @@ map.forEach((row, i) => {
         boundaries.push(
           new Boundary({
             position: {
-              x: Boundary.width * j,
-              y: Boundary.height * i,
+              x: (Boundary.width * j) + startX,
+              y: (Boundary.height * i) + startY,
             },
             image: createImage("./images/pipeCorner3.png"),
           })
@@ -264,8 +266,8 @@ map.forEach((row, i) => {
         boundaries.push(
           new Boundary({
             position: {
-              x: Boundary.width * j,
-              y: Boundary.height * i,
+              x: (Boundary.width * j) + startX,
+              y: (Boundary.height * i) + startY,
             },
             image: createImage("./images/pipeCorner4.png"),
           })
@@ -275,8 +277,8 @@ map.forEach((row, i) => {
         boundaries.push(
           new Boundary({
             position: {
-              x: Boundary.width * j,
-              y: Boundary.height * i,
+              x: (Boundary.width * j) + startX,
+              y: (Boundary.height * i) + startY,
             },
             image: createImage("./images/block.png"),
           })
@@ -286,8 +288,8 @@ map.forEach((row, i) => {
         boundaries.push(
           new Boundary({
             position: {
-              x: j * Boundary.width,
-              y: i * Boundary.height,
+              x: (Boundary.width* j) + startX,
+              y: (Boundary.height * i) + startY,
             },
             image: createImage("./images/capLeft.png"),
           })
@@ -297,8 +299,8 @@ map.forEach((row, i) => {
         boundaries.push(
           new Boundary({
             position: {
-              x: j * Boundary.width,
-              y: i * Boundary.height,
+              x: (Boundary.width* j) + startX,
+              y: (Boundary.height * i) + startY,
             },
             image: createImage("./images/capRight.png"),
           })
@@ -308,8 +310,8 @@ map.forEach((row, i) => {
         boundaries.push(
           new Boundary({
             position: {
-              x: j * Boundary.width,
-              y: i * Boundary.height,
+              x: (Boundary.width* j) + startX,
+              y: (Boundary.height * i) + startY,
             },
             image: createImage("./images/capBottom.png"),
           })
@@ -319,8 +321,8 @@ map.forEach((row, i) => {
         boundaries.push(
           new Boundary({
             position: {
-              x: j * Boundary.width,
-              y: i * Boundary.height,
+              x: (Boundary.width* j) + startX,
+              y: (Boundary.height * i) + startY,
             },
             image: createImage("./images/capTop.png"),
           })
@@ -330,8 +332,8 @@ map.forEach((row, i) => {
         boundaries.push(
           new Boundary({
             position: {
-              x: j * Boundary.width,
-              y: i * Boundary.height,
+              x: (Boundary.width* j) + startX,
+              y: (Boundary.height * i) + startY,
             },
             image: createImage("./images/pipeCross.png"),
           })
@@ -341,8 +343,8 @@ map.forEach((row, i) => {
         boundaries.push(
           new Boundary({
             position: {
-              x: j * Boundary.width,
-              y: i * Boundary.height,
+              x: (Boundary.width* j) + startX,
+              y: (Boundary.height * i) + startY,
             },
             color: "blue",
             image: createImage("./images/pipeConnectorTop.png"),
@@ -353,8 +355,8 @@ map.forEach((row, i) => {
         boundaries.push(
           new Boundary({
             position: {
-              x: j * Boundary.width,
-              y: i * Boundary.height,
+              x: (Boundary.width* j) + startX,
+              y: (Boundary.height * i) + startY,
             },
             color: "blue",
             image: createImage("./images/pipeConnectorRight.png"),
@@ -365,8 +367,8 @@ map.forEach((row, i) => {
         boundaries.push(
           new Boundary({
             position: {
-              x: j * Boundary.width,
-              y: i * Boundary.height,
+              x: (Boundary.width* j) + startX,
+              y: (Boundary.height * i) + startY,
             },
             color: "blue",
             image: createImage("./images/pipeConnectorBottom.png"),
@@ -377,8 +379,8 @@ map.forEach((row, i) => {
         boundaries.push(
           new Boundary({
             position: {
-              x: j * Boundary.width,
-              y: i * Boundary.height,
+              x: (Boundary.width* j) + startX,
+              y: (Boundary.height * i) + startY,
             },
             image: createImage("./images/pipeConnectorLeft.png"),
           })
@@ -388,8 +390,8 @@ map.forEach((row, i) => {
         pellets.push(
           new Pellet({
             position: {
-              x: j * Boundary.width + Boundary.width / 2,
-              y: i * Boundary.height + Boundary.height / 2,
+              x: (Boundary.width* j) + startX + Boundary.width / 2,
+              y: (Boundary.height * i) + startY + Boundary.height / 2,
             },
           })
         );
@@ -434,8 +436,8 @@ const ghosts = [
   //Creation of ghost in the game our pacman
   new Ghost({
     position: {
-      x: Boundary.width * 6 + Boundary.width / 2,
-      y: Boundary.height + Boundary.height / 2,
+      x: (Boundary.width * 6) + startX + Boundary.width / 2,
+      y: Boundary.height + startY + Boundary.height / 2,
     },
     velocity: {
       x: Ghost.speed,
