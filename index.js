@@ -1,5 +1,12 @@
-const canvas = document.querySelector("canvas");
-const context = canvas.getContext("2d");
+import { Player } from "./classes/player.js";
+import { Ghost} from './classes/ghost.js'
+import {Pellet} from "./classes/pellet.js"
+import {Boundary} from "./classes/boundary.js"
+import { context, canvas } from "./createContext.js";
+import { PLAYER_VELOCITY} from "./constants.js";
+import { circleRectCollisonDetector } from "./collisonDetectors/circleRectCollisionDetector.js";
+import {circleCircleCollisionDetector} from "./collisonDetectors/circleCircleCollisionDetector.js"
+
 
 canvas.width = innerWidth;
 canvas.height = innerHeight;
@@ -30,36 +37,36 @@ const msPerFrame = 1000 / fps;
 //   ["-", "-", "-", "-", "-", "-", "-","-","-","-","-","-","-","-","-","-","-","-","-","-"],
 // ];
 
-// const map = [
-//   ["1", "-", "-", "-", "-", "-", "-", "-", "-", "-", "2"],
-//   ["|", ".", ".", ".", ".", ".", ".", ".", ".", ".", "|"],
-//   ["|", ".", "b", ".", "[", "7", "]", ".", "b", ".", "|"],
-//   ["|", ".", ".", ".", ".", "_", ".", ".", ".", ".", "|"],
-//   ["|", ".", "[", "]", ".", ".", ".", "[", "]", ".", "|"],
-//   ["|", ".", ".", ".", ".", "^", ".", ".", ".", ".", "|"],
-//   ["|", ".", "b", ".", "[", "+", "]", ".", "b", ".", "|"],
-//   ["|", ".", ".", ".", ".", "_", ".", ".", ".", ".", "|"],
-//   ["|", ".", "[", "]", ".", ".", ".", "[", "]", ".", "|"],
-//   ["|", ".", ".", ".", ".", "^", ".", ".", ".", ".", "|"],
-//   ["|", ".", "b", ".", "[", "5", "]", ".", "b", ".", "|"],
-//   ["|", ".", ".", ".", ".", ".", ".", ".", ".", ".", "|"],
-//   ["4", "-", "-", "-", "-", "-", "-", "-", "-", "-", "3"],
-// ];
 const map = [
   ["1", "-", "-", "-", "-", "-", "-", "-", "-", "-", "2"],
-  ["|", " ", " ", " ", " ", " ", " ", " ", " ", " ", "|"],
-  ["|", " ", "b", " ", "[", "7", "]", " ", "b", " ", "|"],
-  ["|", " ", " ", " ", " ", "_", " ", " ", " ", " ", "|"],
-  ["|", " ", "[", "]", " ", " ", " ", "[", "]", " ", "|"],
-  ["|", " ", " ", " ", " ", "^", " ", " ", " ", " ", "|"],
-  ["|", " ", "b", " ", "[", "+", "]", " ", "b", " ", "|"],
-  ["|", " ", " ", " ", " ", "_", " ", " ", " ", " ", "|"],
-  ["|", " ", "[", "]", " ", " ", " ", "[", "]", " ", "|"],
-  ["|", ".", " ", " ", " ", "^", " ", " ", " ", " ", "|"],
-  ["|", " ", "b", " ", "[", "5", "]", " ", "b", " ", "|"],
-  ["|", ".", " ", " ", " ", " ", " ", " ", " ", " ", "|"],
+  ["|", ".", ".", ".", ".", ".", ".", ".", ".", ".", "|"],
+  ["|", ".", "b", ".", "[", "7", "]", ".", "b", ".", "|"],
+  ["|", ".", ".", ".", ".", "_", ".", ".", ".", ".", "|"],
+  ["|", ".", "[", "]", ".", ".", ".", "[", "]", ".", "|"],
+  ["|", ".", ".", ".", ".", "^", ".", ".", ".", ".", "|"],
+  ["|", ".", "b", ".", "[", "+", "]", ".", "b", ".", "|"],
+  ["|", ".", ".", ".", ".", "_", ".", ".", ".", ".", "|"],
+  ["|", ".", "[", "]", ".", ".", ".", "[", "]", ".", "|"],
+  ["|", ".", ".", ".", ".", "^", ".", ".", ".", ".", "|"],
+  ["|", ".", "b", ".", "[", "5", "]", ".", "b", ".", "|"],
+  ["|", ".", ".", ".", ".", ".", ".", ".", ".", ".", "|"],
   ["4", "-", "-", "-", "-", "-", "-", "-", "-", "-", "3"],
 ];
+// const map = [
+//   ["1", "-", "-", "-", "-", "-", "-", "-", "-", "-", "2"],
+//   ["|", " ", " ", " ", " ", " ", " ", " ", " ", " ", "|"],
+//   ["|", " ", "b", " ", "[", "7", "]", " ", "b", " ", "|"],
+//   ["|", " ", " ", " ", " ", "_", " ", " ", " ", " ", "|"],
+//   ["|", " ", "[", "]", " ", " ", " ", "[", "]", " ", "|"],
+//   ["|", " ", " ", " ", " ", "^", " ", " ", " ", " ", "|"],
+//   ["|", " ", "b", " ", "[", "+", "]", " ", "b", " ", "|"],
+//   ["|", " ", " ", " ", " ", "_", " ", " ", " ", " ", "|"],
+//   ["|", " ", "[", "]", " ", " ", " ", "[", "]", " ", "|"],
+//   ["|", ".", " ", " ", " ", "^", " ", " ", " ", " ", "|"],
+//   ["|", " ", "b", " ", "[", "5", "]", " ", "b", " ", "|"],
+//   ["|", ".", " ", " ", " ", " ", " ", " ", " ", " ", "|"],
+//   ["4", "-", "-", "-", "-", "-", "-", "-", "-", "-", "3"],
+// ];
 const boundaries = [];
 
 let lastKey = "";
@@ -79,113 +86,10 @@ const keys = {
   },
 };
 
-const PLAYER_VELOCITY = 2;
-const GHOST_VELOCITY = 1;
-
 function createImage(src) {
   const image = new Image();
   image.src = src;
   return image;
-}
-
-//Class Boundary to create custom boundaries hence maps
-class Boundary {
-  static width = 40;
-  static height = 40;
-  constructor({ position, image }) {
-    this.position = position;
-    this.width = 40;
-    this.height = 40;
-    this.image = image;
-  }
-
-  draw() {
-    // context.fillStyle = "blue";
-    // context.fillRect(this.position.x, this.position.y, this.width, this.height);
-    context.drawImage(this.image, this.position.x, this.position.y);
-  }
-}
-//PLyer class to create players for the game
-class Player {
-  static speed = PLAYER_VELOCITY;
-  constructor({ position, velocity }) {
-    this.position = position;
-    this.velocity = velocity;
-    this.radius = 15;
-    this.radians = 0.75;
-    this.openRate = 0.075;
-    this.rotation = 0
-  }
-  draw() {
-    context.save()
-    context.translate(this.position.x, this.position.y)
-    context.rotate(this.rotation)
-    context.translate(-this.position.x, -this.position.y)
-    context.beginPath();
-    context.arc(
-      this.position.x,
-      this.position.y,
-      this.radius,
-      this.radians,
-      Math.PI * 2 - this.radians,
-      false
-    );
-    context.lineTo(this.position.x,this.position.y)
-    context.fillStyle = "yellow";
-    context.fill();
-    context.closePath();
-    context.restore()
-  }
-  update() {
-   
-    this.draw();
-    this.position.x += this.velocity.x;
-    this.position.y += this.velocity.y;
-
-    if(this.radians < 0 || this.radians > 0.75)
-      this.openRate = - this.openRate
-
-    this.radians+= this.openRate
-  }
-}
-
-//PLyer class to create ghosts for the game
-class Ghost {
-  static speed = GHOST_VELOCITY;
-  constructor({ position, velocity, colour = "red" }) {
-    this.position = position;
-    this.velocity = velocity;
-    this.radius = 15;
-    this.colour = colour;
-    this.prevCollisions = [];
-  }
-  draw() {
-    context.beginPath();
-    context.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
-    context.fillStyle = this.colour;
-    context.fill();
-    context.closePath();
-  }
-  update() {
-    this.draw();
-    this.position.x += this.velocity.x;
-    this.position.y += this.velocity.y;
-  }
-}
-//Pellets class to create pellets
-class Pellet {
-  constructor({ position, colour = "yellow" }) {
-    this.position = position;
-    this.radius = 3;
-    this.colour = colour;
-  }
-  draw() {
-    context.beginPath();
-    context.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
-    context.fillStyle = this.colour;
-    context.fill();
-    context.closePath();
-  }
 }
 
 //Creation of player in the game our pacman
@@ -400,40 +304,8 @@ map.forEach((row, i) => {
   });
 });
 
-function circleRectCollisonDetector(circle, rectangle) {
-  let padding = rectangle.width / 2 - circle.radius - 1;
-  return (
-    circle.position.y - circle.radius + circle.velocity.y - padding <=
-      rectangle.position.y + rectangle.height &&
-    circle.position.x - circle.radius + circle.velocity.x - padding <=
-      rectangle.position.x + rectangle.width &&
-    circle.position.y + circle.radius + circle.velocity.y + padding >=
-      rectangle.position.y &&
-    circle.position.x + circle.radius + circle.velocity.x + padding >=
-      rectangle.position.x
-    // false
-  );
-}
-
-function circleCircleCollisionDetector(player, object, objectType ) {
-  
-    if(objectType === "pellet")
-      return (Math.hypot(
-      player.position.x - (object.position.x + (object.radius)*2),
-      player.position.y - (object.position.y + (object.radius)*2)
-    ) <
-    player.radius + object.radius
-  );
-  if(objectType === "ghost")
-    return (Math.hypot(
-      player.position.x - (object.position.x),
-      player.position.y - (object.position.y )
-    ) <
-    player.radius + object.radius
-  );
-}
+//Creation of ghost in the game our pacman
 const ghosts = [
-  //Creation of ghost in the game our pacman
   new Ghost({
     position: {
       x: (Boundary.width * 6) + startX + Boundary.width / 2,
